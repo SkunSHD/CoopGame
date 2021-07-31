@@ -36,6 +36,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USpringArmComponent* SpringArmComp;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bIsJumping;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
