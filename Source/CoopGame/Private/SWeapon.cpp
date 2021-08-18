@@ -38,7 +38,7 @@ void ASWeapon::Tick(float DeltaTime)
 }
 
 void ASWeapon::Fire()
-{
+{ 
 	// Get the world, from pawn eyes to crosshair location
 
 	AActor* MyOwner = GetOwner();
