@@ -32,10 +32,16 @@ ASWeapon::ASWeapon()
 	BaseDamage = 20.0f;
 }
 
+void ASWeapon::BeginPlay()
+{
+	Super::BeginPlay();
+
+	TimeBetweenShots = 60 / RateOfFire;
+}
+
 void ASWeapon::Fire()
 { 
 	// Get the world, from pawn eyes to crosshair location
-
 	AActor* MyOwner = GetOwner();
 	if (MyOwner)
 	{
@@ -96,6 +102,8 @@ void ASWeapon::Fire()
 		}
 
 		PlayFireEffects(TracerEndPoint);
+
+		LastFireTime = GetWorld()->TimeSeconds;
 	}
 }
 
@@ -129,3 +137,16 @@ void ASWeapon::PlayFireEffects(FVector TracerEndPoint)
 	}
 }
 
+void ASWeapon::StartFire()
+{
+	float FirstDelay = FMath::Max(LastFireTime + TimeBetweenShots - GetWorld()->TimeSeconds, 0.f);
+
+	UE_LOG(LogTemp, Warning, TEXT("RateOfFire, %f"), RateOfFire);
+
+	GetWorldTimerManager().SetTimer(TimerHandle_TimeBetweenShots, this, &ASWeapon::Fire, TimeBetweenShots, true, FirstDelay);
+}
+
+void ASWeapon::StopFire()
+{
+	GetWorldTimerManager().ClearTimer(TimerHandle_TimeBetweenShots);
+}
