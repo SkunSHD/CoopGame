@@ -11,6 +11,7 @@ class UDamageType;
 class UParticleSystem;
 class UCameraShake;
 class USoundBase;
+class UForceFeedbackEffect;
 
 UCLASS()
 class COOPGAME_API ASWeapon : public AActor
@@ -71,7 +72,27 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	USoundBase* FireSound;
 
-public:	
+	//////////////////////////////////////////////////////////////////////////
+	// RECOIL SYSTEM
+
+	/**The amount of recoil to apply. We choose a random point from 0-1 on the curve and use it to drive recoil.
+	This means designers get lots of control over the recoil pattern*/
+	UPROPERTY(EditDefaultsOnly, Category = "Recoil")
+	class UCurveVector* RecoilCurve;
+
+	//The speed at which the recoil bumps up per second
+	UPROPERTY(EditDefaultsOnly, Category = "Recoil")
+	float RecoilSpeed;
+
+	//The speed at which the recoil resets per second
+	UPROPERTY(EditDefaultsOnly, Category = "Recoil")
+	float RecoilResetSpeed;
+
+	/** force feedback effect to play when the weapon is fired */
+	UPROPERTY(EditDefaultsOnly, Category = "Recoil")
+	UForceFeedbackEffect* FireForceFeedback;
+
+public:
 	
 	void StartFire();
 

@@ -11,6 +11,9 @@
 #include "Camera/CameraShake.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
 #include "../CoopGame.h"
+#include "SPlayerController.h"
+#include "Curves/CurveVector.h"
+
 
 static int32 DebugWeaponDrawing = 0;
 FAutoConsoleVariableRef CVARDebugWeaponDrawing(
@@ -30,6 +33,10 @@ ASWeapon::ASWeapon()
 	TracerTargetName = "BeamEnd";
 
 	BaseDamage = 20.0f;
+
+	// Recoil
+	RecoilResetSpeed = 5.f;
+	RecoilSpeed = 10.f;
 }
 
 void ASWeapon::BeginPlay()
@@ -37,9 +44,6 @@ void ASWeapon::BeginPlay()
 	Super::BeginPlay();
 
 	TimeBetweenShots = 60 / RateOfFire;
-
-
-	//UGameplayStatics::PlaySound2D(UObject * WorldContextObject, class USoundBase* Sound, float VolumeMultiplier, float PitchMultiplier, float StartTime)
 }
 
 void ASWeapon::Fire()
@@ -133,14 +137,25 @@ void ASWeapon::PlayFireEffects(FVector TracerEndPoint)
 		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
 	}
 
-	// Play CamerShake
+
 	APawn* MyOwner = Cast<APawn>(GetOwner());
 	if (MyOwner)
 	{
-		APlayerController* PC = Cast<APlayerController>(MyOwner->GetController());
+		ASPlayerController* PC = Cast<ASPlayerController>(MyOwner->GetController());
 		if (PC)
 		{
-			PC->ClientPlayCameraShake(FireCameraShake);
+			// Play CamerShake
+			if (FireCameraShake)
+			{
+				PC->ClientPlayCameraShake(FireCameraShake);
+			}
+
+			// Play recoil
+			if (RecoilCurve)
+			{
+				const FVector2D RecoilAmount(RecoilCurve->GetVectorValue(FMath::RandRange(0.f, 1.f)).X, RecoilCurve->GetVectorValue(FMath::RandRange(0.f, 1.f)).Y);
+				PC->ApplyRecoil(RecoilAmount, RecoilSpeed, RecoilResetSpeed);
+			}
 		}
 	}
 }
@@ -149,7 +164,7 @@ void ASWeapon::StartFire()
 {
 	float FirstDelay = FMath::Max(LastFireTime + TimeBetweenShots - GetWorld()->TimeSeconds, 0.f);
 
-	UE_LOG(LogTemp, Warning, TEXT("RateOfFire, %f"), RateOfFire);
+	//UE_LOG(LogTemp, Warning, TEXT("RateOfFire, %f"), RateOfFire);
 
 	GetWorldTimerManager().SetTimer(TimerHandle_TimeBetweenShots, this, &ASWeapon::Fire, TimeBetweenShots, true, FirstDelay);
 }

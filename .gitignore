@@ -1,0 +1,8 @@
+Saved/
+Intermediate/
+DerivedDataCache/
+Binaries/
+.vs/
+
+UnrealEngine.gitignore
+CoopGame.sln
