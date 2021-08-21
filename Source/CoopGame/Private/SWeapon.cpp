@@ -9,8 +9,8 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Camera/CameraShake.h"
-#include "../CoopGame.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
+#include "../CoopGame.h"
 
 static int32 DebugWeaponDrawing = 0;
 FAutoConsoleVariableRef CVARDebugWeaponDrawing(
@@ -37,6 +37,9 @@ void ASWeapon::BeginPlay()
 	Super::BeginPlay();
 
 	TimeBetweenShots = 60 / RateOfFire;
+
+
+	//UGameplayStatics::PlaySound2D(UObject * WorldContextObject, class USoundBase* Sound, float VolumeMultiplier, float PitchMultiplier, float StartTime)
 }
 
 void ASWeapon::Fire()
@@ -123,6 +126,11 @@ void ASWeapon::PlayFireEffects(FVector TracerEndPoint)
 		{
 			TracerComp->SetVectorParameter(TracerTargetName, TracerEndPoint);
 		}
+	}
+
+	if (FireSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
 	}
 
 	// Play CamerShake

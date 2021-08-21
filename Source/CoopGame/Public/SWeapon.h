@@ -10,6 +10,7 @@ class USkeletalMeshComponent;
 class UDamageType;
 class UParticleSystem;
 class UCameraShake;
+class USoundBase;
 
 UCLASS()
 class COOPGAME_API ASWeapon : public AActor
@@ -66,6 +67,9 @@ protected:
 	float TimeBetweenShots;
 
 	float LastFireTime;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	USoundBase* FireSound;
 
 public:	
 	
