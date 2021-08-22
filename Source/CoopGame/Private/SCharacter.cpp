@@ -3,9 +3,11 @@
 
 #include "SCharacter.h"
 #include "Camera/CameraComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "SWeapon.h"
+#include "../CoopGame.h"
 
 // Sets default values
 ASCharacter::ASCharacter()
@@ -20,6 +22,9 @@ ASCharacter::ASCharacter()
 
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
 	CameraComp->SetupAttachment(SpringArmComp);
+
+	// Camsule
+	GetCapsuleComponent()->SetCollisionResponseToChannel(COLLISION_WEAPON, ECR_Ignore);
 
 	// Crouch
 	GetMovementComponent()->GetNavAgentPropertiesRef().bCanCrouch = true;
