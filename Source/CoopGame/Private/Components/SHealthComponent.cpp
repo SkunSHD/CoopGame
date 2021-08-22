@@ -6,7 +6,7 @@
 // Sets default values for this component's properties
 USHealthComponent::USHealthComponent()
 {
-	HealthDefault = 100;
+	MaxHealth = 100;
 }
 
 
@@ -21,7 +21,7 @@ void USHealthComponent::BeginPlay()
 		MyOwner->OnTakeAnyDamage.AddDynamic(this, &USHealthComponent::HandleTakeAnyDamage);
 	}
 
-	Health = HealthDefault;
+	Health = MaxHealth;
 }
 
 
@@ -32,7 +32,7 @@ void USHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, 
 		return;
 	}
 
-	Health = FMath::Clamp(Health - Damage, 0.0f, HealthDefault);
+	Health = FMath::Clamp(Health - Damage, 0.0f, MaxHealth);
 	UE_LOG(LogTemp, Warning, TEXT("Health: %f"), Health);
 
 	OnHealthChanged.Broadcast(this, Health, Damage, DamageType, InstigatedBy, DamageCauser);

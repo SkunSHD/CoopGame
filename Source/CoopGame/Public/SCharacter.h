@@ -68,11 +68,11 @@ protected:
 	ASWeapon* CurrentWeapon;
 
 	UFUNCTION()
-	void OnHealthChanged(USHealthComponent* HealthComp, float Health, float HealthDelta, 
+	void OnHealthChanged(USHealthComponent* OwningHealthComp, float Health, float HealthDelta, 
 		const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	USHealthComponent* HealthCompon;
+	USHealthComponent* HealthComp;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Player")
 	bool bDied;

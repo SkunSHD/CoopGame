@@ -28,7 +28,7 @@ ASCharacter::ASCharacter()
 	GetCapsuleComponent()->SetCollisionResponseToChannel(COLLISION_WEAPON, ECR_Ignore);
 
 	// Components
-	HealthCompon = CreateDefaultSubobject<USHealthComponent>(TEXT("HealthComp"));
+	HealthComp = CreateDefaultSubobject<USHealthComponent>(TEXT("HealthComp"));
 
 	// Crouch
 	GetMovementComponent()->GetNavAgentPropertiesRef().bCanCrouch = true;
@@ -60,10 +60,10 @@ void ASCharacter::BeginPlay()
 		CurrentWeapon->AttachToComponent(GetMesh(),	FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponAttachSocketName);
 	}
 
-	HealthCompon->OnHealthChanged.AddDynamic(this, &ASCharacter::OnHealthChanged);
+	HealthComp->OnHealthChanged.AddDynamic(this, &ASCharacter::OnHealthChanged);
 }
 
-void ASCharacter::OnHealthChanged(USHealthComponent* HealthComp, float Health, float HealthDelta,
+void ASCharacter::OnHealthChanged(USHealthComponent* OwningHealthComp, float Health, float HealthDelta,
 	const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
 {
 	if (Health <= 0.0f && !bDied)
