@@ -54,14 +54,13 @@ void ASBarrel::OnHealthChanged(USHealthComponent* OwningHealthComp, float Health
 		}
 
 		// Launch upwards
-		FVector BarrelLocation = MeshComp->GetComponentLocation();
-		FVector BarrelImpulse = MeshComp->GetMass() * MeshComp->GetUpVector() * ExplosionForce;
-		MeshComp->AddImpulseAtLocation(BarrelImpulse, BarrelLocation);
+		FVector BarrelImpulse = MeshComp->GetUpVector() * ExplosionForce;
+		MeshComp->AddImpulse(BarrelImpulse, NAME_None, true);
 
 		// Play Effects
 		if (ExplosionEffect)
 		{
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionEffect, BarrelLocation);
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionEffect, MeshComp->GetComponentLocation());
 		}
 
 		RadialForceComp->FireImpulse();
