@@ -88,10 +88,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Recoil")
 	float RecoilResetSpeed;
 
-	/** force feedback effect to play when the weapon is fired */
-	UPROPERTY(EditDefaultsOnly, Category = "Recoil")
-	UForceFeedbackEffect* FireForceFeedback;
-
 public:
 	
 	void StartFire();
