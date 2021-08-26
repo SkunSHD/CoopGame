@@ -20,7 +20,10 @@ ASBarrel::ASBarrel()
 	HealthComp = CreateDefaultSubobject<USHealthComponent>(TEXT("HealthComp"));
 
 	RadialForceComp = CreateDefaultSubobject<URadialForceComponent>(TEXT("RadialForceComp"));
-
+	RadialForceComp->SetupAttachment(MeshComp);
+	RadialForceComp->bIgnoreOwningActor = true;
+	RadialForceComp->bImpulseVelChange = true;
+	RadialForceComp->bAutoActivate = false;
 }
 
 // Called when the game starts or when spawned
@@ -54,7 +57,7 @@ void ASBarrel::OnHealthChanged(USHealthComponent* OwningHealthComp, float Health
 		}
 
 		// Launch upwards
-		FVector BarrelImpulse = MeshComp->GetUpVector() * ExplosionForce;
+		FVector BarrelImpulse = MeshComp->GetMass() * MeshComp->GetUpVector() * ExplosionForce;
 		MeshComp->AddImpulse(BarrelImpulse, NAME_None, true);
 
 		// Play Effects

@@ -10,10 +10,9 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Camera/CameraShake.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
-#include "../CoopGame.h"
 #include "SPlayerController.h"
 #include "Curves/CurveVector.h"
-
+#include "../CoopGame.h"
 
 static int32 DebugWeaponDrawing = 0;
 FAutoConsoleVariableRef CVARDebugWeaponDrawing(
@@ -37,6 +36,8 @@ ASWeapon::ASWeapon()
 	// Recoil
 	RecoilResetSpeed = 5.f;
 	RecoilSpeed = 10.f;
+
+	SetReplicates(true);
 }
 
 void ASWeapon::BeginPlay()
@@ -173,3 +174,4 @@ void ASWeapon::StopFire()
 {
 	GetWorldTimerManager().ClearTimer(TimerHandle_TimeBetweenShots);
 }
+

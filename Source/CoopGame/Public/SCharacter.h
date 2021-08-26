@@ -65,6 +65,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Player")
 	FName WeaponAttachSocketName;
 
+	UPROPERTY(Replicated)
 	ASWeapon* CurrentWeapon;
 
 	UFUNCTION()
