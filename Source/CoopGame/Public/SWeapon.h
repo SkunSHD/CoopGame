@@ -13,6 +13,19 @@ class UCameraShake;
 class USoundBase;
 class UForceFeedbackEffect;
 
+// contains information of single hitscan weapon line trace
+USTRUCT()
+struct FHitScanTrance
+{
+	GENERATED_BODY()
+
+public:
+
+	UPROPERTY()
+	FVector_NetQuantize TraceTo;
+
+};
+
 UCLASS()
 class COOPGAME_API ASWeapon : public AActor
 {
@@ -88,13 +101,19 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Recoil")
 	float RecoilResetSpeed;
 
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerFire();
+
+	UPROPERTY(ReplicatedUsing=OnHit_HitScanTrace)
+	FHitScanTrance HitScanTrace;
+
+	UFUNCTION()
+	void OnHit_HitScanTrace();
+
 public:
 	
 	void StartFire();
 
 	void StopFire();
-
-	UFUNCTION(Server, Reliable, WithValidation)
-	void ServerFire();
 	
 };

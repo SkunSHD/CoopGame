@@ -12,6 +12,7 @@
 #include "PhysicalMaterials/PhysicalMaterial.h"
 #include "SPlayerController.h"
 #include "Curves/CurveVector.h"
+#include "Net/UnrealNetwork.h"
 #include "../CoopGame.h"
 
 static int32 DebugWeaponDrawing = 0;
@@ -116,6 +117,12 @@ void ASWeapon::Fire()
 
 		PlayFireEffects(TracerEndPoint);
 
+		// trigger replication for clients
+		if (HasAuthority())
+		{
+			HitScanTrace.TraceTo = TracerEndPoint;
+		}
+
 		LastFireTime = GetWorld()->TimeSeconds;
 	}
 }
@@ -130,6 +137,19 @@ bool ASWeapon::ServerFire_Validate()
 	return true;
 }
 
+void ASWeapon::OnHit_HitScanTrace()
+{
+	// Play cosmetic FX
+
+	PlayFireEffects(HitScanTrace.TraceTo);
+}
+
+void ASWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME_CONDITION(ASWeapon, HitScanTrace, COND_SkipOwner);
+}
 
 void ASWeapon::PlayFireEffects(FVector TracerEndPoint)
 {
