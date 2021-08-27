@@ -53,6 +53,11 @@ void ASWeapon::Fire()
 	AActor* MyOwner = GetOwner();
 	if (MyOwner)
 	{
+		if (!HasAuthority())
+		{
+			ServerFire();
+		}
+
 		FVector EyeLocation;
 		FRotator EyeRotation;
 		MyOwner->GetActorEyesViewPoint(EyeLocation, EyeRotation);
@@ -114,6 +119,17 @@ void ASWeapon::Fire()
 		LastFireTime = GetWorld()->TimeSeconds;
 	}
 }
+
+void ASWeapon::ServerFire_Implementation()
+{
+	Fire();
+}
+
+bool ASWeapon::ServerFire_Validate()
+{
+	return true;
+}
+
 
 void ASWeapon::PlayFireEffects(FVector TracerEndPoint)
 {

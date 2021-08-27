@@ -93,5 +93,8 @@ public:
 	void StartFire();
 
 	void StopFire();
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerFire();
 	
 };
