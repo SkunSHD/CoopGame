@@ -24,6 +24,9 @@ public:
 	UPROPERTY()
 	FVector_NetQuantize TraceTo;
 
+	UPROPERTY()
+	TEnumAsByte<EPhysicalSurface> SurfaceType;
+
 };
 
 UCLASS()
@@ -63,6 +66,8 @@ protected:
 	FName TracerTargetName;
 
 	void PlayFireEffects(FVector TracerEndPoint);
+
+	void PlayImpactEffects(EPhysicalSurface SurfaceType, FVector ImpactPoint);
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	TSubclassOf<UCameraShake> FireCameraShake;
