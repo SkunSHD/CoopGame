@@ -32,7 +32,13 @@ protected:
 	void OnHealthChanged(USHealthComponent* OwningHealthComp, float Health, float HealthDelta,
 			const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
+	UFUNCTION()
+	void OnChange_bExploded();
+
+	UPROPERTY(ReplicatedUsing=OnChange_bExploded)
 	bool bExploded;
+
+	void PlayExplosionEffects();
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* MeshComp;

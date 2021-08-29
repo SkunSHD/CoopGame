@@ -6,6 +6,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "PhysicsEngine/RadialForceComponent.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ASBarrel::ASBarrel()
@@ -24,6 +25,9 @@ ASBarrel::ASBarrel()
 	RadialForceComp->bIgnoreOwningActor = true;
 	RadialForceComp->bImpulseVelChange = true;
 	RadialForceComp->bAutoActivate = false;
+
+	SetReplicates(true);
+	SetReplicateMovement(true);
 }
 
 // Called when the game starts or when spawned
@@ -48,27 +52,49 @@ void ASBarrel::OnHealthChanged(USHealthComponent* OwningHealthComp, float Health
 	if (Health <= 0.0f && !bExploded)
 	{
 		// Explosion
-		bExploded = true;
-
-		// Change material
-		if (ExplodedMaterial)
+		if (HasAuthority())
 		{
-			MeshComp->SetMaterial(0, ExplodedMaterial);
+			// triggers changes for clients
+			bExploded = true;
 		}
 
 		// Launch upwards
 		FVector BarrelImpulse = MeshComp->GetMass() * MeshComp->GetUpVector() * ExplosionForce;
 		MeshComp->AddImpulse(BarrelImpulse, NAME_None, true);
 
-		// Play Effects
-		if (ExplosionEffect)
-		{
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionEffect, MeshComp->GetComponentLocation());
-		}
-
+		// Blast away nearby physics actors
 		RadialForceComp->FireImpulse();
 
-		UE_LOG(LogTemp, Warning, TEXT("Exploded !!!"));
+		PlayExplosionEffects();
 	}
+}
+
+void ASBarrel::PlayExplosionEffects()
+{
+	// Play Effects
+	if (ExplosionEffect)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionEffect, MeshComp->GetComponentLocation());
+	}
+
+	// Change material
+	if (ExplodedMaterial)
+	{
+		MeshComp->SetMaterial(0, ExplodedMaterial);
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("Exploded !!!"));
+}
+
+void ASBarrel::OnChange_bExploded()
+{
+	PlayExplosionEffects();
+}
+
+void ASBarrel::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME_CONDITION(ASBarrel, bExploded, COND_SkipOwner);
 }
 
