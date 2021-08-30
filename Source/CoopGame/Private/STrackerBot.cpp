@@ -7,6 +7,7 @@
 #include "NavigationSystem.h"
 #include "NavigationPath.h"
 #include "DrawDebugHelpers.h"
+#include "Components/SHealthComponent.h"
 
 // Sets default values
 ASTrackerBot::ASTrackerBot()
@@ -19,6 +20,8 @@ ASTrackerBot::ASTrackerBot()
 	MeshComp->SetSimulatePhysics(true);
 	RootComponent = MeshComp;
 
+	HealthComp = CreateDefaultSubobject<USHealthComponent>(TEXT("HealthComp"));
+
 	RequiredDistanceToTarget = 100;
 	MovementForce = 1000;
 
@@ -30,6 +33,8 @@ ASTrackerBot::ASTrackerBot()
 void ASTrackerBot::BeginPlay()
 {
 	Super::BeginPlay();
+
+	HealthComp->OnHealthChanged.AddDynamic(this, &ASTrackerBot::OnHealthChanged);
 
 	// get initial path point
 	NextPathPoint = FindNextPathPoint();
@@ -59,6 +64,7 @@ void ASTrackerBot::Tick(float DeltaTime)
 
 		DrawDebugDirectionalArrow(GetWorld(), GetActorLocation(), GetActorLocation() + ForceDirection, 32, FColor::Yellow, false, 0.f, 1.0f);
 	}
+
 	DrawDebugSphere(GetWorld(), NextPathPoint, 20, 12, FColor::Yellow, false, 0.0f, 1.0f);
 }
 
@@ -76,4 +82,10 @@ FVector ASTrackerBot::FindNextPathPoint()
 	// failed to find the next point
 	return GetActorLocation();
 
+}
+
+void ASTrackerBot::OnHealthChanged(USHealthComponent* OwningHealthComp, float Health, float HealthDelta,
+	const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnHealthChanged %f, %s"), Health, *GetName());
 }
