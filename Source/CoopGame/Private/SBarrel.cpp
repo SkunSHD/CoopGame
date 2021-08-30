@@ -27,6 +27,8 @@ ASBarrel::ASBarrel()
 	RadialForceComp->bAutoActivate = false;
 
 	SetReplicates(true);
+	// allows to replicate "Blast away nearby physics actors" and "Launch upwards"
+	// because it's gameplay important logic
 	SetReplicateMovement(true);
 }
 
