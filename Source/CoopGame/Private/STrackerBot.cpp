@@ -88,4 +88,15 @@ void ASTrackerBot::OnHealthChanged(USHealthComponent* OwningHealthComp, float He
 	const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
 {
 	UE_LOG(LogTemp, Warning, TEXT("OnHealthChanged %f, %s"), Health, *GetName());
+
+	// Pulse on hit
+	if (MatInst == nullptr)
+	{
+		MatInst = MeshComp->CreateAndSetMaterialInstanceDynamicFromMaterial(0, MeshComp->GetMaterial(0));
+	}
+
+	if (MatInst)
+	{
+		MatInst->SetScalarParameterValue("LastTimeDamageTaken", GetWorld()->TimeSeconds);
+	}
 }
