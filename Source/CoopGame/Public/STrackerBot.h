@@ -9,6 +9,7 @@
 class USkeletalMeshComponent;
 class USHealthComponent;
 class UMaterialInstanceDynamic;
+class UParticleSystem;
 
 UCLASS()
 class COOPGAME_API ASTrackerBot : public APawn
@@ -48,6 +49,19 @@ protected:
 
 	// Dynamic material for pulse on damage
 	UMaterialInstanceDynamic* MatInst;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Tracker Bot")
+	float ExplosionDamage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Tracker Bot")
+	float ExplosionRadius;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Tracker Bot")
+	UParticleSystem* ExplosionEffect;
+
+	void SelfDestract();
+
+	bool bExploded;
 
 public:	
 	// Called every frame
