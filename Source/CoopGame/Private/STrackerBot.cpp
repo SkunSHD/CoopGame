@@ -41,8 +41,8 @@ ASTrackerBot::ASTrackerBot()
 	ExplosionDamage = 40;
 	ExplosionRadius = 200;
 
-	SelfDestructionSequenceRate = 0.5f;
-	SelfDestructionSequenceRateDamage = 20;
+	SelfDamageInterval = 0.25f;
+	SelfDestructionDamage = 20;
 }
 
 // Called when the game starts or when spawned
@@ -142,13 +142,13 @@ void ASTrackerBot::SelfDestract()
 
 	DrawDebugSphere(GetWorld(), GetActorLocation(), ExplosionRadius, 12, FColor::Red, false, 4.0f, 0, 1.0f);
 
+	UGameplayStatics::SpawnSoundAtLocation(this, SelfDestructionExplosionSound, GetActorLocation());
+
 	Destroy();
 }
 
 void ASTrackerBot::NotifyActorBeginOverlap(AActor* OtherActor)
 {
-	
-
 	ASCharacter* Character = Cast<ASCharacter>(OtherActor);
 	if (Character)
 	{
@@ -158,11 +158,13 @@ void ASTrackerBot::NotifyActorBeginOverlap(AActor* OtherActor)
 		}
 		bStartedSelfDestructionSequence = true;
 
-		GetWorldTimerManager().SetTimer(MyTimerHandle, this, &ASTrackerBot::DamageOnCall, SelfDestructionSequenceRate, true, 0.0f);
+		GetWorldTimerManager().SetTimer(MyTimerHandle, this, &ASTrackerBot::DamageSelf, SelfDamageInterval, true, 0.0f);
+
+		UGameplayStatics::SpawnSoundAttached(StartSelfDestructionSound, RootComponent);
 	}
 }
 
-void ASTrackerBot::DamageOnCall()
+void ASTrackerBot::DamageSelf()
 {
-	UGameplayStatics::ApplyDamage(this, SelfDestructionSequenceRateDamage, GetInstigatorController(), this, nullptr);
+	UGameplayStatics::ApplyDamage(this, SelfDestructionDamage, GetInstigatorController(), this, nullptr);
 }
