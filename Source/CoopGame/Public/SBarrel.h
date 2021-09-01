@@ -33,9 +33,9 @@ protected:
 			const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
 	UFUNCTION()
-	void OnChange_bExploded();
+	void OnRep_bExploded();
 
-	UPROPERTY(ReplicatedUsing=OnChange_bExploded)
+	UPROPERTY(ReplicatedUsing= OnRep_bExploded)
 	bool bExploded;
 
 	void PlayExplosionEffects();
@@ -43,18 +43,23 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* MeshComp;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Barrel")
 	URadialForceComponent* RadialForceComp;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effects")
-	UMaterial* ExplodedMaterial;
+	UPROPERTY(EditDefaultsOnly, Category = "Barrel")
+	float ExplosionDamage;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effects")
-	UParticleSystem* ExplosionEffect;
+	UPROPERTY(EditDefaultsOnly, Category = "Barrel")
+	float ExplosionRadius;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effects")
+	UPROPERTY(EditDefaultsOnly, Category = "Effects")
 	float ExplosionForce;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Effects")
+	UMaterial* ExplodedMaterial;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Effects")
+	UParticleSystem* ExplosionEffect;
 
 public:	
 	// Called every frame

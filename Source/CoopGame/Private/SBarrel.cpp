@@ -30,6 +30,9 @@ ASBarrel::ASBarrel()
 	// allows to replicate "Blast away nearby physics actors" and "Launch upwards"
 	// because it's gameplay important logic
 	SetReplicateMovement(true);
+
+	ExplosionDamage = 40;
+	ExplosionRadius = 200;
 }
 
 // Called when the game starts or when spawned
@@ -58,6 +61,10 @@ void ASBarrel::OnHealthChanged(USHealthComponent* OwningHealthComp, float Health
 		{
 			// triggers changes for clients
 			bExploded = true;
+
+			TArray<AActor*> IgnoredActors;
+			IgnoredActors.Add(this);
+			UGameplayStatics::ApplyRadialDamage(GetWorld(), ExplosionDamage, GetActorLocation(), ExplosionRadius, nullptr, IgnoredActors, this, GetInstigatorController(), true);
 		}
 
 		// Launch upwards
@@ -88,7 +95,7 @@ void ASBarrel::PlayExplosionEffects()
 	UE_LOG(LogTemp, Warning, TEXT("Exploded !!!"));
 }
 
-void ASBarrel::OnChange_bExploded()
+void ASBarrel::OnRep_bExploded()
 {
 	PlayExplosionEffects();
 }

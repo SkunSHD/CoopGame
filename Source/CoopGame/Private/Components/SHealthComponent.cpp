@@ -40,8 +40,10 @@ void USHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, 
 	}
 
 	Health = FMath::Clamp(Health - Damage, 0.0f, MaxHealth);
-	UE_LOG(LogTemp, Warning, TEXT("Health: %f %s"), Health, *GetName());
-
+	if (GetOwnerRole() == ROLE_Authority)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Health: %f %s"), Health, *GetName());
+	}
 	// Called only on the server
 	OnHealthChanged.Broadcast(this, Health, Damage, DamageType, InstigatedBy, DamageCauser);
 }
@@ -51,4 +53,12 @@ void USHealthComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(USHealthComponent, Health);
+}
+
+// broadcast for clients
+void USHealthComponent::OnRep_Health(float OldHealth)
+{
+	float Damage = OldHealth - Health;
+
+	OnHealthChanged.Broadcast(this, Health, Damage, nullptr, nullptr, nullptr);
 }
