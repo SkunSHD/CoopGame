@@ -35,6 +35,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
 	USphereComponent* SphereComp;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	USphereComponent* OuterSphereComp;
+
 	UFUNCTION()
 	void OnHealthChanged(USHealthComponent* OwningHealthComp, float Health, float HealthDelta,
 			const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
@@ -72,8 +75,6 @@ protected:
 
 	void DamageSelf();
 
-	FTimerHandle MyTimerHandle;
-
 	UPROPERTY(EditDefaultsOnly, Category = "Tracker Bot")
 	float SelfDamageInterval;
 
@@ -86,10 +87,15 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Tracker Bot")
 	USoundBase* StartSelfDestructionSound;
 
+	int32 MaxPowerLevel;
+
+	int32 PowerLevel;
+
+	void OnCheckNearbyBots();
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
-
 };

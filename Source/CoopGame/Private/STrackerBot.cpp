@@ -43,6 +43,9 @@ ASTrackerBot::ASTrackerBot()
 
 	SelfDamageInterval = 0.25f;
 	SelfDestructionDamage = 20;
+
+	MaxPowerLevel = 4;
+	PowerLevel = 0;
 }
 
 // Called when the game starts or when spawned
@@ -56,6 +59,9 @@ void ASTrackerBot::BeginPlay()
 	if (HasAuthority())
 	{
 		NextPathPoint = FindNextPathPoint();
+		
+		FTimerHandle TimerHandle_CheckNearbyBots;
+		GetWorldTimerManager().SetTimer(TimerHandle_CheckNearbyBots, this, &ASTrackerBot::OnCheckNearbyBots, 1.0f, true, 0.0f);
 	}
 }
 
@@ -91,6 +97,50 @@ void ASTrackerBot::Tick(float DeltaTime)
 	}
 }
 
+void ASTrackerBot::OnCheckNearbyBots()
+{
+	const float Radius = 600;
+
+	// temporary collision shape for overlaps
+	FCollisionShape CollShape;
+	CollShape.SetSphere(Radius);
+
+	FCollisionObjectQueryParams QueryParams;
+	QueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+
+	TArray<FOverlapResult> Overlaps;
+	GetWorld()->OverlapMultiByObjectType(Overlaps, GetActorLocation(), FQuat::Identity, QueryParams, CollShape);
+	DrawDebugSphere(GetWorld(), GetActorLocation(), Radius, 12, FColor::White, false, 1.0f);
+
+	int32 NumOfBots = 0;
+	for (FOverlapResult Result : Overlaps)
+	{
+		ASTrackerBot* Bot = Cast<ASTrackerBot>(Result.GetActor());
+		if (Bot && Bot != this)
+		{
+			NumOfBots++;
+		}
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("NumOfBots: %d"), NumOfBots);
+
+	if (MatInst == nullptr)
+	{
+		MatInst = MeshComp->CreateAndSetMaterialInstanceDynamicFromMaterial(0, MeshComp->GetMaterial(0));
+	}
+	if (MatInst)
+	{
+		PowerLevel = FMath::Clamp(NumOfBots, 0, MaxPowerLevel);
+
+		float Alpha = PowerLevel / (float)MaxPowerLevel;
+		UE_LOG(LogTemp, Warning, TEXT("Alpha: %f"), Alpha);
+
+		MatInst->SetScalarParameterValue("PowerLevelAlpha", Alpha);
+	}
+
+	DrawDebugString(GetWorld(), FVector(0, 0, 0), FString::FromInt(PowerLevel), this, FColor::White, true);
+}
+
 FVector ASTrackerBot::FindNextPathPoint()
 {
 	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(this, 0);
@@ -115,7 +165,6 @@ void ASTrackerBot::OnHealthChanged(USHealthComponent* OwningHealthComp, float He
 	{
 		MatInst = MeshComp->CreateAndSetMaterialInstanceDynamicFromMaterial(0, MeshComp->GetMaterial(0));
 	}
-
 	if (MatInst)
 	{
 		MatInst->SetScalarParameterValue("LastTimeDamageTaken", GetWorld()->TimeSeconds);
@@ -151,11 +200,16 @@ void ASTrackerBot::SelfDestract()
 	{
 		TArray<AActor*> IgnoredActors;
 		IgnoredActors.Add(this);
-		UGameplayStatics::ApplyRadialDamage(GetWorld(), ExplosionDamage, GetActorLocation(), ExplosionRadius, nullptr, IgnoredActors, this, GetInstigatorController(), true);
+		float ActualDamage = ExplosionDamage + (ExplosionDamage * PowerLevel);
+		UE_LOG(LogTemp, Warning, TEXT("PowerLevel %d"), PowerLevel);
+		UE_LOG(LogTemp, Warning, TEXT("ExplosionDamage %f"), ExplosionDamage);
+		UE_LOG(LogTemp, Warning, TEXT("DamageWithBonus %f"), ActualDamage);
+
+		UGameplayStatics::ApplyRadialDamage(GetWorld(), ActualDamage, GetActorLocation(), ExplosionRadius, nullptr, IgnoredActors, this, GetInstigatorController(), true);
 
 		DrawDebugSphere(GetWorld(), GetActorLocation(), ExplosionRadius, 12, FColor::Red, false, 4.0f, 0, 1.0f);
 
-		SetLifeSpan(2.0f);
+		SetLifeSpan(1.0f);
 	}
 }
 
@@ -173,7 +227,8 @@ void ASTrackerBot::NotifyActorBeginOverlap(AActor* OtherActor)
 
 		if (HasAuthority())
 		{
-			GetWorldTimerManager().SetTimer(MyTimerHandle, this, &ASTrackerBot::DamageSelf, SelfDamageInterval, true, 0.0f);
+			FTimerHandle TimerHandle_SelfDamage;
+			GetWorldTimerManager().SetTimer(TimerHandle_SelfDamage, this, &ASTrackerBot::DamageSelf, SelfDamageInterval, true, 0.0f);
 		}
 
 		UGameplayStatics::SpawnSoundAttached(StartSelfDestructionSound, RootComponent);
