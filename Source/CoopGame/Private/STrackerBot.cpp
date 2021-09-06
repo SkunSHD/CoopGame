@@ -215,6 +215,8 @@ void ASTrackerBot::SelfDestract()
 
 void ASTrackerBot::NotifyActorBeginOverlap(AActor* OtherActor)
 {
+	Super::NotifyActorBeginOverlap(OtherActor);
+
 	if (bStartedSelfDestructionSequence)
 	{
 		return;
