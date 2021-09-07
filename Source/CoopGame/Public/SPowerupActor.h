@@ -19,7 +19,6 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	void ActivatePowerups();
 
 	/* Time between powerup applied */
 	UPROPERTY(EditDefaultsOnly, Category = "Powerups")
@@ -37,6 +36,8 @@ protected:
 	int32 PowerupTickProcessed;
 
 public:	
+
+	void ActivatePowerups();
 
 	/* 1 */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Powerups")
