@@ -29,10 +29,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
 	UDecalComponent* DecalComp;
 
-	UPROPERTY(EditDefaultsOnly, Category = "PowerupActor")
+	UPROPERTY(EditInstanceOnly, Category = "PowerupActor")
 	TSubclassOf<ASPowerupActor> PowerupClass;
 
-	UPROPERTY(EditDefaultsOnly, Category = "PowerupActor")
+	UPROPERTY(EditInstanceOnly, Category = "PowerupActor")
 	float CooldownDuration;
 
 	ASPowerupActor* PowerupInstance;

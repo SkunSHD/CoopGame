@@ -62,3 +62,16 @@ void USHealthComponent::OnRep_Health(float OldHealth)
 
 	OnHealthChanged.Broadcast(this, Health, Damage, nullptr, nullptr, nullptr);
 }
+
+void USHealthComponent::Heal(float HealAmount)
+{
+	if (HealAmount <= 0.0f || Health <= 0.0f)
+	{
+		return;
+	}
+	Health = FMath::Clamp(Health + HealAmount, 0.0f, MaxHealth);
+
+	UE_LOG(LogTemp, Log, TEXT("Health: %f (+%f)"), Health, HealAmount);
+
+	OnHealthChanged.Broadcast(this, Health, -HealAmount, nullptr, nullptr, nullptr);
+}
