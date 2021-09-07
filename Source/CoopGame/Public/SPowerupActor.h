@@ -19,10 +19,9 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-
 	/* Time between powerup applied */
 	UPROPERTY(EditDefaultsOnly, Category = "Powerups")
-	float ApplyPowerupInterval;
+	float PowerupInterval;
 
 	/* Total times we apply the powerup effect */
 	UPROPERTY(EditDefaultsOnly, Category = "Powerups")

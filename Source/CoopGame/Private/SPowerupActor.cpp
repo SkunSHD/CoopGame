@@ -5,7 +5,7 @@
 // Sets default values
 ASPowerupActor::ASPowerupActor()
 {
-	ApplyPowerupInterval = 0.0f;
+	PowerupInterval = 0.0f;
 	TotalNrOfTicks = 0;
 }
 
@@ -22,7 +22,7 @@ void ASPowerupActor::ActivatePowerups()
 
 	if (TotalNrOfTicks > 0)
 	{
-		GetWorldTimerManager().SetTimer(TimerHandle_PowerupTick, this, &ASPowerupActor::OnPowerupTick, true, 0.0f);
+		GetWorldTimerManager().SetTimer(TimerHandle_PowerupTick, this, &ASPowerupActor::OnPowerupTick, PowerupInterval, true);
 	}
 	else
 	{
@@ -34,12 +34,14 @@ void ASPowerupActor::OnPowerupTick()
 {
 	PowerupTickProcessed++;
 
-	OnPowerupTicked();
-
 	if (PowerupTickProcessed >= TotalNrOfTicks)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Expired"), *GetName());
+
 		OnExpired();
 		GetWorldTimerManager().ClearTimer(TimerHandle_PowerupTick);
 	}
+
+	OnPowerupTicked();
 }
 
