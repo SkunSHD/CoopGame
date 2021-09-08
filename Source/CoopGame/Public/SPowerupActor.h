@@ -16,8 +16,6 @@ public:
 	ASPowerupActor();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
 	/* Time between powerup applied */
 	UPROPERTY(EditDefaultsOnly, Category = "Powerups")
@@ -34,19 +32,27 @@ protected:
 
 	int32 PowerupTickProcessed;
 
+	UPROPERTY(ReplicatedUsing=OnRep_PowerupStateChange)
+	bool bIsPowerupActive;
+
+	UFUNCTION()
+	void OnRep_PowerupStateChange();
+
 public:	
 
-	void ActivatePowerups();
-
-	/* 1 */
+	/* Some notes that are visible in blueprints */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Powerups")
 	void OnActivated();
 
-	/* 2 */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Powerups")
 	void OnPowerupTicked();
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Powerups")
 	void OnExpired();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Powerups")
+	void OnPowerupStateChanged(bool bNewIsPowerupActive);
+
+	void ActivatePowerups();
 
 };
