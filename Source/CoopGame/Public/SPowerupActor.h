@@ -42,7 +42,7 @@ public:
 
 	/* Some notes that are visible in blueprints */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Powerups")
-	void OnActivated();
+	void OnActivated(AActor* ActivatedFor);
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Powerups")
 	void OnPowerupTicked();
@@ -53,6 +53,6 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Powerups")
 	void OnPowerupStateChanged(bool bNewIsPowerupActive);
 
-	void ActivatePowerups();
+	void ActivatePowerups(AActor* ActivatedFor);
 
 };

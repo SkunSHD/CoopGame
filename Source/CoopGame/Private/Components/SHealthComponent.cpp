@@ -34,16 +34,18 @@ void USHealthComponent::BeginPlay()
 
 void USHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
 {
+	if (bInvulnerable)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Invulnerable mode"));
+		return;
+	}
 	if (Damage < 0)
 	{
 		return;
 	}
 
 	Health = FMath::Clamp(Health - Damage, 0.0f, MaxHealth);
-	if (GetOwnerRole() == ROLE_Authority)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Health: %f %s"), Health, *GetName());
-	}
+	UE_LOG(LogTemp, Warning, TEXT("Health: %f %s"), Health, *GetName());
 	// Called only on the server
 	OnHealthChanged.Broadcast(this, Health, Damage, DamageType, InstigatedBy, DamageCauser);
 }

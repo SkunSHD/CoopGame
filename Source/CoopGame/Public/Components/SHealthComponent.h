@@ -36,6 +36,9 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "HealthComponent")
 	void Heal(float HealAmount);
 
+	UPROPERTY(BlueprintReadWrite, Category = "HealthComponent")
+	bool bInvulnerable;
+
 public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Events")

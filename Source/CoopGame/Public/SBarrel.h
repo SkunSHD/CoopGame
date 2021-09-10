@@ -35,7 +35,7 @@ protected:
 	UFUNCTION()
 	void OnRep_bExploded();
 
-	UPROPERTY(ReplicatedUsing= OnRep_bExploded)
+	UPROPERTY(ReplicatedUsing=OnRep_bExploded)
 	bool bExploded;
 
 	void PlayExplosionEffects();

@@ -14,13 +14,13 @@ ASPowerupActor::ASPowerupActor()
 	SetReplicates(true);
 }
 
-void ASPowerupActor::ActivatePowerups()
+void ASPowerupActor::ActivatePowerups(AActor* ActivatedFor)
 {
 	bIsPowerupActive = true;
 	// call for server coz only clients are notified
 	OnRep_PowerupStateChange();
 
-	OnActivated();
+	OnActivated(ActivatedFor);
 
 	if (TotalNrOfTicks > 0)
 	{
