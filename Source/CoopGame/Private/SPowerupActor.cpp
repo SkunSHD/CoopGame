@@ -41,7 +41,7 @@ void ASPowerupActor::OnPowerupTick()
 		UE_LOG(LogTemp, Warning, TEXT("Expired"), *GetName());
 
 		bIsPowerupActive = false;
-		// call for server coz only clients are notified
+		// call for the server coz only clients are notified
 		OnRep_PowerupStateChange(); 
 
 		OnExpired();

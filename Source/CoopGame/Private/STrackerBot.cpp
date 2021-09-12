@@ -46,6 +46,9 @@ ASTrackerBot::ASTrackerBot()
 
 	MaxPowerLevel = 4;
 	PowerLevel = 0;
+
+	SetReplicates(true);
+	SetReplicateMovement(true);
 }
 
 // Called when the game starts or when spawned
@@ -80,7 +83,7 @@ void ASTrackerBot::Tick(float DeltaTime)
 			// target reached
 			NextPathPoint = FindNextPathPoint();
 
-			DrawDebugString(GetWorld(), GetActorLocation(), "GOTCHA!");
+			// DrawDebugString(GetWorld(), GetActorLocation(), "GOTCHA!");
 		}
 		else
 		{

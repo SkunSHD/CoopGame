@@ -2,26 +2,25 @@
 
 
 #include "SGrenadeLauncher.h"
+#include "Components/SphereComponent.h"
 
-// Sets default values
-ASGrenadeLauncher::ASGrenadeLauncher()
+void ASGrenadeLauncher::Fire()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	//UE_LOG(LogTemp, Warning, TEXT("GeneratedBP"));
 
+	AActor* MyOwner = GetOwner();
+	if (MyOwner && ProjectileClass)
+	{
+		FVector EyeLocation;
+		FRotator EyeRotation;
+		MyOwner->GetActorEyesViewPoint(EyeLocation, EyeRotation);
+
+		FVector MuzzleLocation = MeshComp->GetSocketLocation(MuzzleSocketName);
+
+		FActorSpawnParameters ActorSpawnParams;
+		ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		// Spawn the projectile at the muzzle
+		GetWorld()->SpawnActor<AActor>(ProjectileClass, MuzzleLocation, EyeRotation, ActorSpawnParams);
+	}
 }
-
-// Called when the game starts or when spawned
-void ASGrenadeLauncher::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
-// Called every frame
-void ASGrenadeLauncher::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-

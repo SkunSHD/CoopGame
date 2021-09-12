@@ -12,7 +12,6 @@ USHealthComponent::USHealthComponent()
 	SetIsReplicated(true);
 }
 
-
 // Called when the game starts
 void USHealthComponent::BeginPlay()
 {
@@ -31,9 +30,9 @@ void USHealthComponent::BeginPlay()
 	Health = MaxHealth;
 }
 
-
 void USHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
 {
+	// Called only on the server
 	if (bInvulnerable)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Invulnerable mode"));
@@ -46,7 +45,7 @@ void USHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, 
 
 	Health = FMath::Clamp(Health - Damage, 0.0f, MaxHealth);
 	UE_LOG(LogTemp, Warning, TEXT("Health: %f %s"), Health, *GetName());
-	// Called only on the server
+
 	OnHealthChanged.Broadcast(this, Health, Damage, DamageType, InstigatedBy, DamageCauser);
 }
 

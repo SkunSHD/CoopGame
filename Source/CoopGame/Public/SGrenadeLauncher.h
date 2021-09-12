@@ -3,24 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "SWeapon.h"
 #include "SGrenadeLauncher.generated.h"
 
 UCLASS()
-class COOPGAME_API ASGrenadeLauncher : public AActor
+class COOPGAME_API ASGrenadeLauncher : public ASWeapon
 {
 	GENERATED_BODY()
-	
-public:	
-	// Sets default values for this actor's properties
-	ASGrenadeLauncher();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	virtual void Fire() override;
 
+	UPROPERTY(EditDefaultsOnly, Category = "ProjectileWeapon")
+	TSubclassOf<AActor> ProjectileClass;
 };
