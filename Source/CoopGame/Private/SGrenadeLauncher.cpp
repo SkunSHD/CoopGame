@@ -7,10 +7,21 @@
 void ASGrenadeLauncher::Fire()
 {
 	//UE_LOG(LogTemp, Warning, TEXT("GeneratedBP"));
+	
+	if (!ProjectileClass)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No projectile has been set"));
+		return;
+	}
 
 	AActor* MyOwner = GetOwner();
-	if (MyOwner && ProjectileClass)
+	if (MyOwner)
 	{
+		if (!HasAuthority())
+		{
+			ServerFire();
+		}
+
 		FVector EyeLocation;
 		FRotator EyeRotation;
 		MyOwner->GetActorEyesViewPoint(EyeLocation, EyeRotation);
@@ -22,5 +33,9 @@ void ASGrenadeLauncher::Fire()
 
 		// Spawn the projectile at the muzzle
 		GetWorld()->SpawnActor<AActor>(ProjectileClass, MuzzleLocation, EyeRotation, ActorSpawnParams);
+
+		PlayFireEffects(FVector());
+
+		LastFireTime = GetWorld()->TimeSeconds;
 	}
 }

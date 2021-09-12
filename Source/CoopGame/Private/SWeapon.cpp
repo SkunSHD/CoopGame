@@ -42,6 +42,9 @@ ASWeapon::ASWeapon()
 
 	NetUpdateFrequency = 66.0f;
 	MinNetUpdateFrequency = 33.0f;
+
+	UE_LOG(LogTemp, Warning, TEXT("ASWeapon constructor"));
+
 }
 
 void ASWeapon::BeginPlay()
@@ -49,6 +52,8 @@ void ASWeapon::BeginPlay()
 	Super::BeginPlay();
 
 	TimeBetweenShots = 60 / RateOfFire;
+
+	UE_LOG(LogTemp, Warning, TEXT("ASWeapon BeginPlay"));
 }
 
 void ASWeapon::Fire()
@@ -145,6 +150,7 @@ void ASWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetime
 
 void ASWeapon::PlayFireEffects(FVector TracerEndPoint)
 {
+	UE_LOG(LogTemp, Warning, TEXT("PlayFireEffects"));
 	if (MuzzleEffect)
 	{
 		UGameplayStatics::SpawnEmitterAttached(MuzzleEffect, MeshComp, MuzzleSocketName);
