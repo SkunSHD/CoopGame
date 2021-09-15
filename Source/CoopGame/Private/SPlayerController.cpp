@@ -17,7 +17,7 @@ void ASPlayerController::LookUp(float Rate)
 		}
 	}
 
-	//Apply the recoil over several frames
+	// Apply the recoil over several frames
 	if (!FMath::IsNearlyZero(RecoilBumpAmount.Y, 0.01f))
 	{
 		FVector2D LastCurrentRecoil = RecoilBumpAmount;
@@ -26,7 +26,7 @@ void ASPlayerController::LookUp(float Rate)
 		AddPitchInput(LastCurrentRecoil.Y - RecoilBumpAmount.Y);
 	}
 
-	//Slowly reset back to center after recoil is processed
+	// Slowly reset back to center after recoil is processed
 	FVector2D LastRecoilResetAmount = RecoilResetAmount;
 	RecoilResetAmount.Y = FMath::FInterpTo(RecoilResetAmount.Y, 0.f, GetWorld()->DeltaTimeSeconds, CurrentRecoilResetSpeed);
 	AddPitchInput(LastRecoilResetAmount.Y - RecoilResetAmount.Y);
@@ -36,7 +36,7 @@ void ASPlayerController::LookUp(float Rate)
 
 void ASPlayerController::Turn(float Rate)
 {
-	//If the player has moved their camera to compensate for recoil we need this to cancel out the recoil reset effect
+	// If the player has moved their camera to compensate for recoil we need this to cancel out the recoil reset effect
 	if (!FMath::IsNearlyZero(RecoilResetAmount.X, 0.01f))
 	{
 		if (RecoilResetAmount.X > 0.f && Rate > 0.f)
@@ -49,7 +49,7 @@ void ASPlayerController::Turn(float Rate)
 		}
 	}
 
-	//Apply the recoil over several frames
+	// Apply the recoil over several frames
 	if (!FMath::IsNearlyZero(RecoilBumpAmount.X, 0.1f))
 	{
 		FVector2D LastCurrentRecoil = RecoilBumpAmount;

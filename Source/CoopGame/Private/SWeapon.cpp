@@ -156,7 +156,6 @@ void ASWeapon::PlayFireEffects(FVector TracerEndPoint)
 		UGameplayStatics::SpawnEmitterAttached(MuzzleEffect, MeshComp, MuzzleSocketName);
 	}
 
-
 	if (TracerEffect)
 	{
 		FVector MuzzleLocation = MeshComp->GetSocketLocation(MuzzleSocketName);
@@ -171,7 +170,6 @@ void ASWeapon::PlayFireEffects(FVector TracerEndPoint)
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
 	}
-
 
 	APawn* MyOwner = Cast<APawn>(GetOwner());
 	if (MyOwner)
