@@ -3,10 +3,13 @@
 
 #include "SGameMode.h"
 #include "Components/SHealthComponent.h"
+#include "SGameState.h"
 
 
 ASGameMode::ASGameMode()
 {
+	GameStateClass = ASGameState::StaticClass();
+
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.TickInterval = 1.0f;
 
@@ -144,4 +147,15 @@ void ASGameMode::PrepareForNextWave()
 void ASGameMode::GameOver()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Game Over!"));
+}
+
+
+void ASGameMode::SetWaveState(EWaveState NewWaveState)
+{
+	ASGameState* GS = GetGameState<ASGameState>();
+
+	if (ensureAlways(GS))
+	{
+		GS->WaveState = NewWaveState;
+	}
 }
