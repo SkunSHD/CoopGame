@@ -20,6 +20,8 @@ void ASGameMode::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	CheckWaveState();
+
+	CheckGameOverState();
 }
 
 
@@ -33,13 +35,29 @@ void ASGameMode::StartPlay()
 void ASGameMode::CheckWaveState()
 {
 	bool bPreparing = GetWorldTimerManager().IsTimerActive(TimerHandle_NextWaveStart);
-
 	if (bPreparing || NrOfBotsToSpawn > 0)
 	{
 		return;
 	}
 
-	// cehck if bots alive
+	bool bIsAnyBotAlive = HasAnyBotAlive();
+	if (!bIsAnyBotAlive)
+	{
+		PrepareForNextWave();
+	}
+}
+
+void ASGameMode::CheckGameOverState()
+{
+	bool bHasPlayerAlive = HasAnyPlayerAlive();
+	if (!bHasPlayerAlive)
+	{
+		GameOver();
+	}
+}
+
+bool ASGameMode::HasAnyBotAlive()
+{
 	bool bIsAnyBotAlive = false;
 	for (FConstPawnIterator It = GetWorld()->GetPawnIterator(); It; ++It)
 	{
@@ -57,10 +75,34 @@ void ASGameMode::CheckWaveState()
 		}
 	}
 
-	if (!bIsAnyBotAlive)
+	return bIsAnyBotAlive;
+}
+
+bool ASGameMode::HasAnyPlayerAlive()
+{
+	bool bIsAnyPlayerAlive = false;
+
+	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
 	{
-		PrepareForNextWave();
+		APlayerController* PC = It->Get();
+		if (!PC) {
+			continue;
+		}
+
+		APawn* Pawn = PC->GetPawn();
+		if (!Pawn) {
+			continue;
+		}
+
+		USHealthComponent* HealthComp = Cast<USHealthComponent>(Pawn->GetComponentByClass(USHealthComponent::StaticClass()));
+		if (ensure(HealthComp) && HealthComp->GetHealth() > 0.0f)
+		{
+			bIsAnyPlayerAlive = true;
+			break;
+		}
 	}
+
+	return bIsAnyPlayerAlive;
 }
 
 
@@ -96,4 +138,10 @@ void ASGameMode::SpawnBotTimerElapsed()
 void ASGameMode::PrepareForNextWave()
 {
 	GetWorldTimerManager().SetTimer(TimerHandle_NextWaveStart, this, &ASGameMode::StartWave, TimeBetweenWaves, false, 0.0f);
+}
+
+
+void ASGameMode::GameOver()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Game Over!"));
 }

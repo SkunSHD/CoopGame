@@ -24,6 +24,10 @@ protected:
 
 	int32 NrOfBotsToSpawn;
 
+	FTimerHandle TimerHandle_BotSpawned;
+
+	FTimerHandle TimerHandle_NextWaveStart;
+
 	UPROPERTY(EditDefaultsOnly, Category = "GameMode")
 	float TimeBetweenWaves;
 
@@ -38,11 +42,15 @@ protected:
 
 	void SpawnBotTimerElapsed();
 
-	FTimerHandle TimerHandle_BotSpawned;
-
 	void CheckWaveState();
 
-	FTimerHandle TimerHandle_NextWaveStart;
+	void CheckGameOverState();
+
+	bool HasAnyBotAlive();
+
+	bool HasAnyPlayerAlive();
+
+	void GameOver();
 
 public:
 
