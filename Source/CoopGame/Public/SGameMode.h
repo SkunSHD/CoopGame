@@ -29,6 +29,8 @@ protected:
 
 	FTimerHandle TimerHandle_NextWaveStart;
 
+protected:
+
 	UPROPERTY(EditDefaultsOnly, Category = "GameMode")
 	float TimeBetweenWaves;
 

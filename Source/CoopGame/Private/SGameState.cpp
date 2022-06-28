@@ -18,3 +18,16 @@ void ASGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 
 	DOREPLIFETIME(ASGameState, WaveState);
 }
+
+
+void ASGameState::SetWaveState(EWaveState NewWaveState)
+{
+	if (GetLocalRole() == ROLE_Authority)
+	{
+		const EWaveState OldWaveState = WaveState;
+		WaveState = NewWaveState;
+		
+		// Call on server manually coz OnRep is called automatically only on clients
+		OnRep_WaveState(OldWaveState);
+	}
+}

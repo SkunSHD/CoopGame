@@ -3,6 +3,7 @@ Intermediate/
 DerivedDataCache/
 Binaries/
 .vs/
+.idea/
 
 UnrealEngine.gitignore
 CoopGame.sln

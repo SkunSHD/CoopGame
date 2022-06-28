@@ -37,11 +37,10 @@ protected:
 	UFUNCTION()
 	void OnRep_WaveState(EWaveState OldWaveState);
 
-
-public:
-
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_WaveState, Category = "GameState")
 	EWaveState WaveState;
+
+public:
 
 	void SetWaveState(EWaveState NewWaveState);
 };
