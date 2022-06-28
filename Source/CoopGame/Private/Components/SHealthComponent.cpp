@@ -2,6 +2,7 @@
 
 
 #include "Components/SHealthComponent.h"
+#include "SGameMode.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values for this component's properties
@@ -38,7 +39,7 @@ void USHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, 
 		UE_LOG(LogTemp, Warning, TEXT("Invulnerable mode"));
 		return;
 	}
-	if (Damage < 0)
+	if (Damage < 0 || bIsDead)
 	{
 		return;
 	}
@@ -46,7 +47,18 @@ void USHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, 
 	Health = FMath::Clamp(Health - Damage, 0.0f, MaxHealth);
 	UE_LOG(LogTemp, Warning, TEXT("Health: %f %s"), Health, *GetName());
 
+	bIsDead = Health <= 0.0f;
+
 	OnHealthChanged.Broadcast(this, Health, Damage, DamageType, InstigatedBy, DamageCauser);
+
+	if (bIsDead)
+	{
+		ASGameMode* GM = Cast<ASGameMode>(GetWorld()->GetAuthGameMode());
+		if (GM)
+		{
+			GM->OnActorKilled.Broadcast(GetOwner(), InstigatedBy);
+		}
+	}
 }
 
 void USHealthComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

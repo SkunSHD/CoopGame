@@ -4,11 +4,13 @@
 #include "SGameMode.h"
 #include "Components/SHealthComponent.h"
 #include "SGameState.h"
+#include "SPlayerState.h"
 
 
 ASGameMode::ASGameMode()
 {
 	GameStateClass = ASGameState::StaticClass();
+	PlayerStateClass = ASPlayerState::StaticClass();
 
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.TickInterval = 1.0f;
