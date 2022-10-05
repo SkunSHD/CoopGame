@@ -73,14 +73,25 @@ protected:
 	TSubclassOf<UCameraShake> FireCameraShake;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	float BaseDamage;
-
+	float BaseDamagePlayer;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	float BaseDamageAI;
+	
 	virtual void Fire();
 
 	FTimerHandle TimerHandle_TimeBetweenShots;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	float RateOfFire;
+
+	/* Bullet Spread in Degrees */
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon", meta = (ClampMin=0.0f))
+	float BulletSpreadPlayer;
+
+	/* Bullet Spread in Degrees for AI */
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon", meta = (ClampMin=0.0f))
+	float BulletSpreadAI;
 
 	// Derived from RateOfFire
 	float TimeBetweenShots;

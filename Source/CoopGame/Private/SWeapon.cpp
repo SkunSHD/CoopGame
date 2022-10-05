@@ -32,7 +32,11 @@ ASWeapon::ASWeapon()
 
 	TracerTargetName = "BeamEnd";
 
-	BaseDamage = 20.0f;
+	BaseDamagePlayer = 20.0f;
+	BaseDamageAI = 10.0f;
+	
+	BulletSpreadPlayer = 4.0f;
+	BulletSpreadAI = 8.0f;
 
 	// Recoil
 	RecoilResetSpeed = 5.f;
@@ -60,6 +64,7 @@ void ASWeapon::Fire()
 { 
 	// Get the world, from pawn eyes to crosshair location
 	AActor* MyOwner = GetOwner();
+	
 	if (MyOwner)
 	{
 		if (!HasAuthority())
@@ -67,11 +72,17 @@ void ASWeapon::Fire()
 			ServerFire();
 		}
 
+		bool bPlayer = Cast<ASCharacter>(MyOwner)->IsPlayerControlled();
+
 		FVector EyeLocation;
 		FRotator EyeRotation;
 		MyOwner->GetActorEyesViewPoint(EyeLocation, EyeRotation);
 
 		FVector ShotDirection = EyeRotation.Vector();
+
+		// Add bullet spread
+		float HalfRad = FMath::DegreesToRadians(bPlayer ? BulletSpreadPlayer : BulletSpreadAI);
+		ShotDirection = FMath::VRandCone(ShotDirection, HalfRad, HalfRad);
 
 		FVector TraceEnd = EyeLocation + (ShotDirection * 10000);
 
@@ -90,7 +101,8 @@ void ASWeapon::Fire()
 		{
 			// Get Damage amount
 			SurfaceType = UPhysicalMaterial::DetermineSurfaceType(Hit.PhysMaterial.Get());
-			float ActualDamage = BaseDamage;
+
+			float ActualDamage = bPlayer ? BaseDamagePlayer : BaseDamageAI;
 			if (SurfaceType == SURFACE_FLESHVULNERABLE)
 			{
 				ActualDamage *= 4;
