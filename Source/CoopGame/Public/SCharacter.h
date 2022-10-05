@@ -55,10 +55,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool bIsJumping;
 
-	void StartFire();
-
-	void StopFire();
-
 	UPROPERTY(EditDefaultsOnly, Category = "Player")
 	TSubclassOf<ASWeapon> StarterWeaponClass;
 
@@ -88,4 +84,10 @@ public:
 	virtual FVector GetPawnViewLocation() const;
 
 	void Fire();
+
+	UFUNCTION(BlueprintCallable, Category = "Player")
+	void StartFire();
+	
+	UFUNCTION(BlueprintCallable, Category = "Player")
+	void StopFire();
 };
