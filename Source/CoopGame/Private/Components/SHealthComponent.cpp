@@ -102,7 +102,7 @@ float USHealthComponent::GetHealth() const
 }
 
 bool USHealthComponent::IsFriendly(AActor* ActorA, AActor* ActorB)
-{
+	{
 	if (ActorA == nullptr || ActorB == nullptr)
 	{
 		return true;
